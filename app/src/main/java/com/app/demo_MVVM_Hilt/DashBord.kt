@@ -1,28 +1,23 @@
 package com.app.demo_MVVM_Hilt
 
 import android.app.Dialog
-import android.content.Intent
 import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import android.view.ViewGroup.LayoutParams.MATCH_PARENT
 import android.widget.Toast
-import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.view.ViewCompat
-import androidx.core.view.WindowInsetsCompat
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.app.demo_MVVM_Hilt.Adapter.FestivalAdapter
 import com.app.demo_MVVM_Hilt.databinding.ActivityDashBordBinding
-import com.app.demo_MVVM_Hilt.databinding.ActivityLoginBinding
-import com.app.demo_MVVM_Hilt.databinding.ActivityMainBinding
 import com.app.demo_MVVM_Hilt.databinding.LoaderLayoutBinding
+import com.app.demo_MVVM_Hilt.model.Festival
 import com.app.demo_MVVM_Hilt.model.LoginViewModel
 import com.app.demo_MVVM_Hilt.util.AppState
 import com.google.gson.Gson
 import com.google.gson.JsonElement
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 @AndroidEntryPoint
 class DashBord : AppCompatActivity() {

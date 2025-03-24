@@ -1,4 +1,4 @@
-package com.app.demo_MVVM_Hilt
+package com.app.demo_MVVM_Hilt.model
 
 data class FestivalResponse(
     val status: String,

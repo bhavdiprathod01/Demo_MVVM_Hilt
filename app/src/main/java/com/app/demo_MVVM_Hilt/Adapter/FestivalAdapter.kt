@@ -1,8 +1,9 @@
-package com.app.demo_MVVM_Hilt
+package com.app.demo_MVVM_Hilt.Adapter
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.app.demo_MVVM_Hilt.databinding.ItemFestivalBinding
+import com.app.demo_MVVM_Hilt.model.Festival
 import com.bumptech.glide.Glide
 
 
