@@ -17,6 +17,7 @@ class LoginViewModel @Inject constructor(private val apiRepo: BaseApiRepo) : Vie
     private var _stateLogin = MutableLiveData<AppState<JsonElement>>()
     val stateLogin: MutableLiveData<AppState<JsonElement>> get() = _stateLogin
 
+
     val errorMessage = MutableSharedFlow<String>()
 
     fun validate(mobile: String, isNetworkConnection: Boolean) =
@@ -48,6 +49,13 @@ class LoginViewModel @Inject constructor(private val apiRepo: BaseApiRepo) : Vie
     fun oottppapi(mobile: String,oottpp:String) = viewModelScope.launch {
         _stateLogin.value = AppState.Loading()
         apiRepo.oottppapi(mobile,oottpp).collect {
+            _stateLogin.value = it
+        }
+    }
+
+    fun festival(u_id:String,device_id:String,request_for:String) = viewModelScope.launch {
+        _stateLogin.value = AppState.Loading()
+        apiRepo.festival(u_id,device_id,request_for).collect {
             _stateLogin.value = it
         }
     }

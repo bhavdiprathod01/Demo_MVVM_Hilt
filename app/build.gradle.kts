@@ -72,5 +72,7 @@ dependencies {
     ksp(libs.hilt.compiler)
     //  implementation libs.androidx.hilt.lifecycle.viewmodel
 
+    implementation ("com.github.bumptech.glide:glide:4.12.0")
+
 
 }

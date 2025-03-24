@@ -21,4 +21,13 @@ interface ApiService {
     ): Response<JsonElement>
 
 
+    @FormUrlEncoded
+    @POST("festival.php")
+    suspend fun festival(
+        @Field("u_id") u_id: String,
+        @Field("device_id") device_id: String,
+        @Field("request_for") request_for: String
+    ): Response<JsonElement>
+
+
 }

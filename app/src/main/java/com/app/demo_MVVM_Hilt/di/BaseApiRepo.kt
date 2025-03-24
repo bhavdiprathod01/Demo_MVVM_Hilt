@@ -25,8 +25,18 @@ class BaseApiRepo @Inject constructor(
         flow {
             emit(safeApiCall(context) { baseApiService.doLogin(mobile) })
         }.flowOn(Dispatchers.IO)
-    fun oottppapi(mobile: String,oottpp:String): Flow<AppState<JsonElement>> =
+
+    fun oottppapi(mobile: String, oottpp: String): Flow<AppState<JsonElement>> =
         flow {
-            emit(safeApiCall(context) { baseApiService.oottpp(mobile,oottpp) })
+            emit(safeApiCall(context) { baseApiService.oottpp(mobile, oottpp) })
+        }.flowOn(Dispatchers.IO)
+
+    fun festival(
+        u_id: String,
+        device_id: String,
+        request_for: String
+    ): Flow<AppState<JsonElement>> =
+        flow {
+            emit(safeApiCall(context) { baseApiService.festival(u_id, device_id, request_for) })
         }.flowOn(Dispatchers.IO)
 }

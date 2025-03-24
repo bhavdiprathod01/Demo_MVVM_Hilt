@@ -1,7 +1,6 @@
 package com.app.demo_MVVM_Hilt
 
 import android.app.Dialog
-import android.content.Context
 import android.content.Intent
 import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
@@ -13,39 +12,42 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.lifecycle.lifecycleScope
+import androidx.recyclerview.widget.LinearLayoutManager
+import com.app.demo_MVVM_Hilt.databinding.ActivityDashBordBinding
+import com.app.demo_MVVM_Hilt.databinding.ActivityLoginBinding
 import com.app.demo_MVVM_Hilt.databinding.ActivityMainBinding
 import com.app.demo_MVVM_Hilt.databinding.LoaderLayoutBinding
 import com.app.demo_MVVM_Hilt.model.LoginViewModel
 import com.app.demo_MVVM_Hilt.util.AppState
+import com.google.gson.Gson
 import com.google.gson.JsonElement
-import com.google.gson.JsonObject
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.delay
-
 import kotlinx.coroutines.launch
 @AndroidEntryPoint
-class MainActivity : AppCompatActivity() {
-    private lateinit var binding: ActivityMainBinding
+class DashBord : AppCompatActivity() {
+    private lateinit var binding: ActivityDashBordBinding
     val viewModel by viewModels<LoginViewModel>()
+    private lateinit var languageList : List<Festival>
+    val adapter = FestivalAdapter(emptyList())
+    var festival: List<Festival> = listOf()
     private var loader: Dialog? = null
     private var loaderBinding: LoaderLayoutBinding? = null
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        binding = ActivityMainBinding.inflate(layoutInflater)
+        binding = ActivityDashBordBinding.inflate(layoutInflater)
         setContentView(binding.root)
-        binding.buttonLogin.setOnClickListener {
 
-            viewModel.validate(
-                binding.editTextPhone.text.toString().trim(),
-              true
-            )
-        }
+        binding.recyView.layoutManager = LinearLayoutManager(this)
+        binding.recyView.adapter = adapter
+        callLoginApi()
         lifecycleScope.launch {
             observeViewModel()
         }
 
+
     }
-    private suspend fun observeViewModel() {
+    private  fun observeViewModel() {
         viewModel.stateLogin.observe(this) {
             when (it) {
                 is AppState.Loading -> {
@@ -64,56 +66,40 @@ class MainActivity : AppCompatActivity() {
             }
         }
 
-        viewModel.errorMessage.collect {
-            if (it.isNullOrEmpty()) return@collect
-            if (it != "success") Toast.makeText(this, it, Toast.LENGTH_SHORT).show()
-            else callLoginApi()
-        }
+//        viewModel.errorMessage.collect {
+//            if (it.isNullOrEmpty()) return@collect
+//            if (it != "success") Toast.makeText(this, it, Toast.LENGTH_SHORT).show()
+//            else callLoginApi()
+//        }
     }
-    private fun callLoginApi() {
-        if (true) viewModel.oottppapi("6357891042",binding.editTextPhone.text.toString().trim())
-        else showToastMessage("No Internet..")
-    }
-
 
     private fun parseResponse(jsonElement: JsonElement) {
         val data = jsonElement.asJsonObject
+        val gson = Gson()
         if (data.get("status").asString == "1") {
-            showToastMessage(data.get("msg").toString())
-            lifecycleScope.launch {
-                delay(500)
-                startActivity(
-                    Intent(
-                        this@MainActivity,
-                        DashBord::class.java
-                    )
-                )
-            }
-            saveUserData(data)
+//            showToastMessage(data.get("msg").toString())
+            val festivalsJsonArray = data.getAsJsonArray("festivals")
+            val festivalsList = gson.fromJson(festivalsJsonArray, Array<Festival>::class.java).toList()
+
+            // Now you can use the festivalsList to update your UI or perform other operations
+            festival = festivalsList.toList()
+            adapter.festivals = festival
+            adapter.notifyDataSetChanged()
         } else {
             showToastMessage(data.get("message").asString)
         }
     }
-
-
-    private fun saveUserData(data: JsonObject) {
-        val sharedPref = getSharedPreferences("UserPrefs", Context.MODE_PRIVATE)
-        with(sharedPref.edit()) {
-            putString("user_id", data.get("user_id").asString)
-            putString("profile_type", data.get("profile_type").asString)
-            putString("device_id", data.get("device_id").asString)
-            putString("user_phone", data.get("user_phone").asString)
-            putString("user_email", data.get("user_email").asString)
-            putString("user_city", data.get("user_city").asString)
-            putString("user_address", data.get("user_address").asString)
-            putString("paid_status", data.get("paid_status").asString)
-            apply() // Apply changes asynchronously
-            showToastMessage(data.get("user_phone").toString())
-        }
+    private fun callLoginApi() {
+        if (true) viewModel.festival("755","c1d56822fef1d4a2b849e219093e4538","0")
+        else showToastMessage("No Internet..")
     }
+
+
     fun showToastMessage(message: String?) {
         Toast.makeText(this, message, Toast.LENGTH_LONG).show()
     }
+
+
     fun isLoading(shown: Boolean) {
         if (!shown) {
             if (loader != null && loader!!.isShowing) {
